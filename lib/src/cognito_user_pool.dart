@@ -28,7 +28,7 @@ class CognitoUserPool {
   late String _userPoolId;
   String? _clientId;
   String? _clientSecret;
-  String? _region;
+  String? _accountId;
   bool advancedSecurityDataCollectionFlag;
   Client? client;
   late CognitoStorage storage;
@@ -54,9 +54,9 @@ class CognitoUserPool {
     if (!regExp.hasMatch(userPoolId)) {
       throw ArgumentError('Invalid userPoolId format.');
     }
-    _region = userPoolId.split('_')[0];
+    _accountId = userPoolId.split('_')[0];
     _userAgent = customUserAgent;
-    client = Client(region: _region, endpoint: endpoint, userAgent: _userAgent);
+    client = Client(accountId: _accountId, endpoint: endpoint, userAgent: _userAgent);
 
     if (customClient != null) {
       client = customClient;
@@ -77,8 +77,8 @@ class CognitoUserPool {
     return _clientId;
   }
 
-  String? getRegion() {
-    return _region;
+  String? getAccountId() {
+    return _accountId;
   }
 
   Future<CognitoUser?> getCurrentUser() async {

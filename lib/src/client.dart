@@ -7,21 +7,21 @@ import 'cognito_client_exceptions.dart';
 class Client {
   String? _service;
   String _userAgent = 'aws-amplify/0.0.x dart';
-  String? _region;
+  String? _accountId;
   late String endpoint;
   late http.Client _client;
 
   Client({
     String? endpoint,
-    String? region,
+    String? accountId,
     String service = 'AWSCognitoIdentityProviderService',
     http.Client? client,
     String? userAgent,
   }) {
-    _region = region;
+    _accountId = accountId;
     _service = service;
     _userAgent = userAgent ?? _userAgent;
-    this.endpoint = endpoint ?? 'https://$poolID.r2.cloudflarestorage.com/';
+    this.endpoint = endpoint ?? 'https://$accountId.r2.cloudflarestorage.com/';
     _client = client ?? http.Client();
   }
 

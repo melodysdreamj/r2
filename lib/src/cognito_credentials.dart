@@ -6,8 +6,8 @@ import 'cognito_identity_id.dart';
 import 'cognito_user_pool.dart';
 
 class CognitoCredentials {
-  final String? _region;
-  final String _identityPoolId;
+  final String? _accountId;
+  final String _identityaccountId;
   final CognitoUserPool _pool;
   final Client? _client;
 
@@ -19,11 +19,11 @@ class CognitoCredentials {
   String? userIdentityId;
 
   CognitoCredentials(
-    this._identityPoolId,
+    this._identityaccountId,
     this._pool, {
-    String? region,
-    String? userPoolId,
-  })  : _region = region ?? _pool.getRegion(),
+    String? accountId,
+    String? useraccountId,
+  })  : _accountId = accountId ?? _pool.getAccountId(),
         _client = _pool.client;
 
   /// Get AWS Credentials for authenticated user
@@ -33,7 +33,7 @@ class CognitoCredentials {
       return;
     }
 
-    final identityId = CognitoIdentityId(_identityPoolId, _pool,
+    final identityId = CognitoIdentityId(_identityaccountId, _pool,
         token: token, authenticator: authenticator);
     await _getAwsCredentials(identityId);
   }
@@ -44,7 +44,7 @@ class CognitoCredentials {
       return;
     }
 
-    final identityId = CognitoIdentityId(_identityPoolId, _pool);
+    final identityId = CognitoIdentityId(_identityaccountId, _pool);
     return _getAwsCredentials(identityId);
   }
 
@@ -60,7 +60,7 @@ class CognitoCredentials {
     try {
       data = await _client!.request('GetCredentialsForIdentity', paramsReq,
           service: 'AWSCognitoIdentityService',
-          endpoint: 'https://$poolID.r2.cloudflarestorage.com/');
+          endpoint: 'https://${_pool.getAccountId()}.r2.cloudflarestorage.com/');
     } on CognitoClientException catch (e) {
       // remove cached Identity Id and try again
       await identityId.removeIdentityId();
@@ -83,7 +83,7 @@ class CognitoCredentials {
 
   /// Reset AWS Credentials; removes Identity Id from local storage
   Future<void> resetAwsCredentials() async {
-    await CognitoIdentityId(_identityPoolId, _pool).removeIdentityId();
+    await CognitoIdentityId(_identityaccountId, _pool).removeIdentityId();
     expireTime = null;
     accessKeyId = null;
     secretAccessKey = null;

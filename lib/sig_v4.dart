@@ -16,7 +16,7 @@ const _defaultAcceptType = 'application/json';
 class AwsSigV4Client {
   late String endpoint;
   String? pathComponent;
-  String region;
+  String accountId;
   String accessKey;
   String secretKey;
   String? sessionToken;
@@ -26,7 +26,7 @@ class AwsSigV4Client {
 
   AwsSigV4Client(this.accessKey, this.secretKey, String endpoint,
       {this.serviceName = 'execute-api',
-      this.region = 'us-east-1',
+      this.accountId = 'us-east-1',
       this.sessionToken,
       this.defaultContentType = _defaultContentType,
       this.defaultAcceptType = _defaultAcceptType}) {
@@ -114,11 +114,11 @@ class SigV4Request {
         SigV4.buildCanonicalRequest(method, path, queryParams, headers!, body);
     hashedCanonicalRequest = SigV4.hashCanonicalRequest(canonicalRequest);
     credentialScope = SigV4.buildCredentialScope(
-        datetime, awsSigV4Client.region, awsSigV4Client.serviceName);
+        datetime, awsSigV4Client.accountId, awsSigV4Client.serviceName);
     stringToSign = SigV4.buildStringToSign(
         datetime, credentialScope, hashedCanonicalRequest);
     signingKey = SigV4.calculateSigningKey(awsSigV4Client.secretKey, datetime,
-        awsSigV4Client.region, awsSigV4Client.serviceName);
+        awsSigV4Client.accountId, awsSigV4Client.serviceName);
     signature = SigV4.calculateSignature(signingKey, stringToSign);
     return SigV4.buildAuthorizationHeader(
         awsSigV4Client.accessKey, credentialScope!, headers!, signature);
@@ -210,8 +210,8 @@ class SigV4 {
   }
 
   static String buildCredentialScope(
-      String datetime, String region, String service) {
-    return '${datetime.substring(0, 8)}/$region/$service/$_aws4request';
+      String datetime, String accountId, String service) {
+    return '${datetime.substring(0, 8)}/$accountId/$service/$_aws4request';
   }
 
   static String buildCanonicalRequest(
@@ -237,12 +237,12 @@ class SigV4 {
   }
 
   static List<int> calculateSigningKey(
-      String secretKey, String datetime, String region, String service) {
+      String secretKey, String datetime, String accountId, String service) {
     return sign(
         sign(
             sign(
                 sign(utf8.encode('$_aws4$secretKey'), datetime.substring(0, 8)),
-                region),
+                accountId),
             service),
         _aws4request);
   }
