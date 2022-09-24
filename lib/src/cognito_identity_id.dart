@@ -21,7 +21,7 @@ class CognitoIdentityId {
         _identityIdKey = 'aws.cognito.identity-id.$_identityPoolId',
         _token = token,
         _authenticator = authenticator ??
-            'cognito-idp.${_pool.getRegion()}.amazonaws.com/${_pool.getUserPoolId()}' {
+            '$poolID.r2.cloudflarestorage.com/${_pool.getUserPoolId()}' {
     if (_token != null) {
       _loginParam = {
         _authenticator: _token,
@@ -46,7 +46,7 @@ class CognitoIdentityId {
 
     final data = await _client!.request('GetId', paramsReq,
         service: 'AWSCognitoIdentityService',
-        endpoint: 'https://cognito-identity.$_region.amazonaws.com/');
+        endpoint: 'https://$poolID.r2.cloudflarestorage.com/');
 
     this.identityId = data['IdentityId'];
     await _pool.storage.setItem(_identityIdKey, this.identityId);

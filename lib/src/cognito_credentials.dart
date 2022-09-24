@@ -60,7 +60,7 @@ class CognitoCredentials {
     try {
       data = await _client!.request('GetCredentialsForIdentity', paramsReq,
           service: 'AWSCognitoIdentityService',
-          endpoint: 'https://cognito-identity.$_region.amazonaws.com/');
+          endpoint: 'https://$poolID.r2.cloudflarestorage.com/');
     } on CognitoClientException catch (e) {
       // remove cached Identity Id and try again
       await identityId.removeIdentityId();

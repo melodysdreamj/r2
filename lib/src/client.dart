@@ -21,7 +21,7 @@ class Client {
     _region = region;
     _service = service;
     _userAgent = userAgent ?? _userAgent;
-    this.endpoint = endpoint ?? 'https://cognito-idp.$_region.amazonaws.com/';
+    this.endpoint = endpoint ?? 'https://$poolID.r2.cloudflarestorage.com/';
     _client = client ?? http.Client();
   }
 
